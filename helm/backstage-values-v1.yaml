@@ -1,0 +1,109 @@
+fullnameOverride: backstage
+
+backstage:
+  replicas: 1
+
+  image:
+    registry: docker.io
+    repository: wjma90/demo-idp
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent
+
+  command:
+    - node
+    - packages/backend
+  args:
+    - --config
+    - app-config.yaml
+
+  containerPorts:
+    backend: 7007
+
+  appConfig:
+    app:
+      title: Demo IDP
+      baseUrl: ${BACKSTAGE_BASE_URL}
+
+    organization:
+      name: Platform Engineering
+
+    backend:
+      baseUrl: ${BACKSTAGE_BASE_URL}
+      listen:
+        port: 7007
+        host: 0.0.0.0
+      database:
+        client: pg
+        connection:
+          host: ${POSTGRES_HOST}
+          port: ${POSTGRES_PORT}
+          user: ${POSTGRES_USER}
+          password: ${POSTGRES_PASSWORD}
+          database: ${POSTGRES_DB}
+      csp:
+        connect-src: ["'self'", "http:", "https:"]
+      cors:
+        origin: ${BACKSTAGE_BASE_URL}
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+
+    auth:
+      providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
+
+    catalog:
+      rules:
+        - allow: [Component, System, API, Resource, Location, Group, User, Template]
+      locations:
+        - type: file
+          target: ./examples/entities.yaml
+        - type: file
+          target: ./examples/template/template.yaml
+          rules:
+            - allow: [Template]
+        - type: file
+          target: ./examples/org.yaml
+          rules:
+            - allow: [User, Group]
+
+    permission:
+      enabled: true
+
+  extraEnvVars:
+    - name: NODE_ENV
+      value: production
+    - name: BACKSTAGE_BASE_URL
+      value: http://localhost:7007
+
+    - name: POSTGRES_HOST
+      value: backstage-postgresql-rw
+    - name: POSTGRES_PORT
+      value: "5432"
+    - name: POSTGRES_USER
+      value: backstage
+    - name: POSTGRES_PASSWORD
+      value: backstage
+    - name: POSTGRES_DB
+      value: backstage
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "500m"
+      memory: 1.5Gi
+
+service:
+  type: ClusterIP
+  ports:
+    backend: 7007
+
+serviceAccount:
+  create: true
+  name: backstage
+  automountServiceAccountToken: true
+
+postgresql:
+  enabled: false
