@@ -1,0 +1,75 @@
+# syntax=docker/dockerfile:1.7
+# Dockerfile base para una app Backstage generada.
+# Build context esperado:
+#
+#   stack/backstage/demo-idp
+#
+# La app generada debe contener backstage.json, yarn.lock, .yarnrc.yml,
+# packages/ y plugins/.
+
+ARG NODE_IMAGE=node:24-trixie-slim
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+FROM ${NODE_IMAGE} AS packages
+WORKDIR /app
+COPY backstage.json package.json yarn.lock ./
+COPY .yarn ./.yarn
+COPY .yarnrc.yml ./
+COPY packages/app/package.json packages/app/package.json
+COPY packages/backend/package.json packages/backend/package.json
+COPY plugins/platform-docker/package.json plugins/platform-docker/package.json
+COPY plugins/platform-gitea/package.json plugins/platform-gitea/package.json
+COPY plugins/platform-gitea-backend/package.json plugins/platform-gitea-backend/package.json
+RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
+
+FROM ${NODE_IMAGE} AS build
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ENV PYTHON=/usr/bin/python3
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3 g++ build-essential libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    corepack enable
+USER node
+WORKDIR /app
+COPY --from=packages --chown=node:node /app .
+RUN --mount=type=cache,target=/home/node/.cache,sharing=locked,uid=1000,gid=1000 \
+    yarn install --immutable
+COPY --chown=node:node . .
+RUN yarn tsc
+RUN yarn --cwd packages/backend build
+RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle && \
+    tar xzf packages/backend/dist/skeleton.tar.gz -C packages/backend/dist/skeleton && \
+    tar xzf packages/backend/dist/bundle.tar.gz -C packages/backend/dist/bundle
+
+FROM ${NODE_IMAGE} AS runtime
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ENV PYTHON=/usr/bin/python3
+ENV NODE_ENV=production
+ENV NODE_OPTIONS=--no-node-snapshot
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3 g++ build-essential libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    corepack enable
+USER node
+WORKDIR /app
+COPY --from=build --chown=node:node /app/.yarn ./.yarn
+COPY --from=build --chown=node:node /app/.yarnrc.yml ./
+COPY --from=build --chown=node:node /app/backstage.json ./
+COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton/ ./
+RUN --mount=type=cache,target=/home/node/.cache,sharing=locked,uid=1000,gid=1000 \
+    yarn workspaces focus --all --production && yarn cache clean
+COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
+COPY --chown=node:node ./examples ./examples
+COPY --chown=node:node app-config*.yaml ./
+# COPY --chown=node:node demo-templates ./demo-templates
+EXPOSE 7007
+CMD ["node", "packages/backend", "--config", "app-config.production.yaml"]

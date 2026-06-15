@@ -1,0 +1,47 @@
+controller:
+  nodeSelector:
+    node: system
+
+  # Plugins externos de traffic routing.
+  # El nombre debe coincidir con el usado en:
+  # spec.strategy.canary.trafficRouting.plugins.<name>
+  #
+  # Si el controller corre en nodos amd64, usa el ejemplo comentado de linux-amd64.
+  trafficRouterPlugins:
+    - name: argoproj-labs/gatewayAPI
+      location: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-gatewayapi/releases/download/v0.5.0/gatewayapi-plugin-linux-arm64
+
+    # Gateway API para Linux amd64.
+    # - name: argoproj-labs/gatewayAPI
+    #   location: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-gatewayapi/releases/download/v0.5.0/gatewayapi-plugin-linux-amd64
+
+    # Istio no se instala como trafficRouterPlugin.
+    # Argo Rollouts trae soporte nativo con:
+    # spec.strategy.canary.trafficRouting.istio.virtualService
+
+    # Ejemplos
+    # Requieren instalar/montar el binario del plugin y revisar RBAC especifico.
+    #
+    # Consul service mesh:
+    # - name: argoproj-labs/consul
+    #   location: file:///plugins/rollouts-plugin-trafficrouter-consul
+    #
+    # Contour HTTPProxy:
+    # - name: argoproj-labs/contour
+    #   location: file:///plugins/rollouts-plugin-trafficrouter-contour
+    #
+    # Sample nginx plugin de referencia para aprender el sistema de plugins.
+    # No usar como base productiva sin revisarlo.
+    # - name: argoproj-labs/sample-nginx
+    #   location: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-sample-nginx/releases/download/v0.0.1/metric-plugin-linux-amd64
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      # -- Prometheus ServiceMonitor interval
+      interval: 60s
+dashboard:
+  nodeSelector:
+    node: system
+  enabled: true

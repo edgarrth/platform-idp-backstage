@@ -1,0 +1,63 @@
+global:
+  nodeSelector:
+    node: system
+configs:
+  cm:
+    timeout.reconciliation: 60s
+    # si dentro del cluster k8s, se modifica el objeto por otros controllers, argocd lo ignorará
+    # siempre que esos atributos no esten en git
+    controller.diff.server.side: "true"
+    # evitar usar app.kubernetes.io/instance para tracking entre otras tools
+    application.resourceTrackingMethod: annotation 
+    # argocd puede escanear todo el cluster, eso genera eventos, si esta kyverno, generá decenas, cientos, etc. 
+    # es mejor desactivarlos del scan de argocd
+    resource.exclusions: |
+      - apiGroups:
+          - kyverno.io
+          - reports.kyverno.io
+          - wgpolicyk8s.io
+        kinds:
+          - ClusterPolicyReport
+          - PolicyReport
+          - EphemeralReport
+        clusters:
+          - '*'
+  params:
+    server.insecure: "true"
+    
+controller:
+  nodeSelector:
+    node: system
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      # -- Prometheus ServiceMonitor interval
+      interval: 60s
+server:
+  nodeSelector:
+    node: system
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      # -- Prometheus ServiceMonitor interval
+      interval: 60s
+repoServer:
+  nodeSelector:
+    node: system
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      # -- Prometheus ServiceMonitor interval
+      interval: 60s
+applicationSet:
+  nodeSelector:
+    node: system
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      # -- Prometheus ServiceMonitor interval
+      interval: 60s

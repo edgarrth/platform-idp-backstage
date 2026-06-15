@@ -5,7 +5,7 @@ backstage:
 
   image:
     registry: docker.io
-    repository: wjma90/demo-idp
+    repository: edgarrth/demo-idp
     tag: "0.0.1"
     pullPolicy: IfNotPresent
 

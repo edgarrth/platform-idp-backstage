@@ -18,6 +18,9 @@ COPY .yarn ./.yarn
 COPY .yarnrc.yml ./
 COPY packages/app/package.json packages/app/package.json
 COPY packages/backend/package.json packages/backend/package.json
+COPY plugins/platform-docker/package.json plugins/platform-docker/package.json
+COPY plugins/platform-gitea/package.json plugins/platform-gitea/package.json
+COPY plugins/platform-gitea-backend/package.json plugins/platform-gitea-backend/package.json
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 FROM ${NODE_IMAGE} AS build
@@ -49,13 +52,21 @@ ARG BUILDPLATFORM
 ENV PYTHON=/usr/bin/python3
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--no-node-snapshot
+ENV PATH=/opt/techdocs/bin:$PATH
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && \
-    apt-get install -y --no-install-recommends python3 g++ build-essential libsqlite3-dev && \
+    apt-get install -y --no-install-recommends python3 python3-venv g++ build-essential libsqlite3-dev && \
     rm -rf /var/lib/apt/lists/* && \
     corepack enable
+# --- inicio: soporte TechDocs local v3 ---
+# TechDocs en Kubernetes no debe depender de /var/run/docker.sock.
+# mkdocs-techdocs-core permite generar la documentacion dentro del pod.
+RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
+    python3 -m venv /opt/techdocs && \
+    /opt/techdocs/bin/pip install mkdocs-techdocs-core
+# --- fin: soporte TechDocs local v3 ---
 USER node
 WORKDIR /app
 COPY --from=build --chown=node:node /app/.yarn ./.yarn
@@ -67,6 +78,6 @@ RUN --mount=type=cache,target=/home/node/.cache,sharing=locked,uid=1000,gid=1000
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 COPY --chown=node:node ./examples ./examples
 COPY --chown=node:node app-config*.yaml ./
-COPY --chown=node:node demo-templates ./demo-templates
+COPY --chown=node:node software-template ./software-template
 EXPOSE 7007
-CMD ["node", "packages/backend", "--config", "app-config.yaml"]
+CMD ["node", "packages/backend", "--config", "app-config.production.yaml"]
