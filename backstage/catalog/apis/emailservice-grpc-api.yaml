@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: emailservice-grpc-api
+  description: gRPC API used to send order emails.
+spec:
+  type: grpc
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  definition: |
+    service EmailService {
+      rpc SendOrderConfirmation(SendOrderConfirmationRequest) returns (Empty);
+    }

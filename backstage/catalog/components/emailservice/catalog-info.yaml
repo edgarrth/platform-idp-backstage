@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: emailservice
+  description: Service that sends order emails.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: emailservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/emailservice-grpc-api
+  dependsOn:
+    - resource:default/online-boutique-namespace

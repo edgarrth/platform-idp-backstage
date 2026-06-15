@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: productcatalogservice
+  description: Service that exposes product catalog data.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: productcatalogservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/productcatalogservice-grpc-api
+  dependsOn:
+    - resource:default/online-boutique-namespace

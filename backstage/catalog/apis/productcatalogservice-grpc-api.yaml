@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: productcatalogservice-grpc-api
+  description: gRPC API used to read products from the catalog.
+spec:
+  type: grpc
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  definition: |
+    service ProductCatalogService {
+      rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+      rpc GetProduct(GetProductRequest) returns (Product);
+    }

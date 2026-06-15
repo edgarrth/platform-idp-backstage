@@ -1,0 +1,5 @@
+site_name: currencyservice
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: online-boutique
+  description: Demo commerce system used in the Backstage module.
+spec:
+  owner: group:default/team-platform

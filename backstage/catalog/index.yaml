@@ -1,0 +1,35 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: online-boutique-catalog
+  description: Catalog index for the module 06 applications and shared UI components.
+spec:
+  targets:
+    - ./org/team-platform.yaml
+    - ./systems/online-boutique.yaml
+    - ./apis/adservice-grpc-api.yaml
+    - ./apis/cartservice-grpc-api.yaml
+    - ./apis/checkoutservice-grpc-api.yaml
+    - ./apis/currencyservice-grpc-api.yaml
+    - ./apis/emailservice-grpc-api.yaml
+    - ./apis/paymentservice-grpc-api.yaml
+    - ./apis/productcatalogservice-grpc-api.yaml
+    - ./apis/recommendationservice-grpc-api.yaml
+    - ./apis/shippingservice-grpc-api.yaml
+    - ./resources/online-boutique-namespace.yaml
+    - ./resources/redis-cart/catalog-info.yaml
+    - ./components/cartservice/catalog-info.yaml
+    - ./components/checkoutservice/catalog-info.yaml
+    - ./components/currencyservice/catalog-info.yaml
+    - ./components/emailservice/catalog-info.yaml
+    - ./components/frontend-header-ui/catalog-info.yaml
+    - ./components/frontend-footer-ui/catalog-info.yaml
+    - ./components/frontend-cart-page/catalog-info.yaml
+    - ./components/frontend-product-page/catalog-info.yaml
+    - ./components/loadgenerator/catalog-info.yaml
+    - ./components/paymentservice/catalog-info.yaml
+    - ./components/productcatalogservice/catalog-info.yaml
+    - ./components/recommendationservice/catalog-info.yaml
+    - ./components/shippingservice/catalog-info.yaml
+    - http://gitea:3000/root/frontend/src/branch/main/catalog-info.yaml
+    - http://gitea:3000/root/adservice/src/branch/main/catalog-info.yaml

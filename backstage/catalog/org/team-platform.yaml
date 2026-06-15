@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-platform
+  description: Team responsible for platform engineering and the demo application.
+spec:
+  type: team
+  profile:
+    displayName: Team Platform
+  children: []

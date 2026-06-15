@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: paymentservice
+  description: Service that charges orders.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: paymentservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/paymentservice-grpc-api
+  dependsOn:
+    - resource:default/online-boutique-namespace

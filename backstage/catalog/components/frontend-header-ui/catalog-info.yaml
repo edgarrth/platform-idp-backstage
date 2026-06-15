@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: frontend-header-ui
+  description: Header template used by the frontend service.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: frontend
+spec:
+  type: library
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  subcomponentOf: component:default/frontend

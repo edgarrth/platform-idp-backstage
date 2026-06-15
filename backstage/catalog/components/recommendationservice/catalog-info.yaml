@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: recommendationservice
+  description: Service that recommends products to the frontend.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: recommendationservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/recommendationservice-grpc-api
+  consumesApis:
+    - api:default/productcatalogservice-grpc-api
+  dependsOn:
+    - component:default/productcatalogservice
+    - resource:default/online-boutique-namespace

@@ -1,0 +1,5 @@
+site_name: recommendationservice
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

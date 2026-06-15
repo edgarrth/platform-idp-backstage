@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: redis-cart
+  description: Redis cache used by cartservice.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: redis-cart
+spec:
+  type: redis
+  owner: group:default/team-platform
+  system: online-boutique
+  dependencyOf:
+    - component:default/cartservice

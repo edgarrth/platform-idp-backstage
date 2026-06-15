@@ -1,0 +1,5 @@
+site_name: frontend-header-ui
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

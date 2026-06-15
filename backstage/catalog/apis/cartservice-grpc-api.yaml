@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: cartservice-grpc-api
+  description: gRPC API used to manage shopping carts.
+spec:
+  type: grpc
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  definition: |
+    service CartService {
+      rpc AddItem(AddItemRequest) returns (Empty);
+      rpc GetCart(GetCartRequest) returns (Cart);
+    }

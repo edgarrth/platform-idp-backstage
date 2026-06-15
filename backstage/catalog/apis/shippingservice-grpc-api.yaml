@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: shippingservice-grpc-api
+  description: gRPC API used to quote and ship orders.
+spec:
+  type: grpc
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  definition: |
+    service ShippingService {
+      rpc GetQuote(GetQuoteRequest) returns (GetQuoteResponse);
+      rpc ShipOrder(ShipOrderRequest) returns (ShipOrderResponse);
+    }

@@ -1,0 +1,5 @@
+site_name: shippingservice
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

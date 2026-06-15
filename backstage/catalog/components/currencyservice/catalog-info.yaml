@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: currencyservice
+  description: Service that converts prices between currencies.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: currencyservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/currencyservice-grpc-api
+  dependsOn:
+    - resource:default/online-boutique-namespace

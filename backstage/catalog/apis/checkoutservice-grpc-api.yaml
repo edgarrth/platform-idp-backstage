@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: checkoutservice-grpc-api
+  description: gRPC API used to place orders.
+spec:
+  type: grpc
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  definition: |
+    service CheckoutService {
+      rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+    }

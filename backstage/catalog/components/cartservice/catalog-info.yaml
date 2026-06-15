@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cartservice
+  description: Service that stores and returns shopping cart data.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: cartservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/cartservice-grpc-api
+  dependsOn:
+    - resource:default/redis-cart
+    - resource:default/online-boutique-namespace

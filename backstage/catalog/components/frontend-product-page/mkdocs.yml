@@ -1,0 +1,5 @@
+site_name: frontend-product-page
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

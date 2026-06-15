@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: loadgenerator
+  description: Workload generator that sends traffic to frontend.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: loadgenerator
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:default/team-platform
+  system: online-boutique
+  dependsOn:
+    - component:default/frontend
+    - resource:default/online-boutique-namespace

@@ -1,0 +1,30 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: checkoutservice
+  description: Service that places orders and coordinates checkout dependencies.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: checkoutservice
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/team-platform
+  system: online-boutique
+  providesApis:
+    - api:default/checkoutservice-grpc-api
+  consumesApis:
+    - api:default/productcatalogservice-grpc-api
+    - api:default/shippingservice-grpc-api
+    - api:default/paymentservice-grpc-api
+    - api:default/emailservice-grpc-api
+    - api:default/currencyservice-grpc-api
+    - api:default/cartservice-grpc-api
+  dependsOn:
+    - component:default/productcatalogservice
+    - component:default/shippingservice
+    - component:default/paymentservice
+    - component:default/emailservice
+    - component:default/currencyservice
+    - component:default/cartservice
+    - resource:default/online-boutique-namespace
